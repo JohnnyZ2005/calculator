@@ -1,0 +1,20 @@
+/* Adding styles to the body */
+body {
+    background-color: brown;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.container {
+    width:  350px;
+    height: 500px;
+    background-color: #f4f4f4;
+    display: flex;
+}
+
+.display {
+    border: 100px solid white;
+    position: absolute;
+    width: 150px;
+}

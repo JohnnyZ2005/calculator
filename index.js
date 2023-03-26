@@ -41,4 +41,3 @@ function operate (number1, operator, number2){
         return "Operator does not exist"
    }
 }
-
