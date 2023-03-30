@@ -1,122 +1,102 @@
-// global variables 
-let display = document.getElementById('display');
-let currentValue;
-let newValue;
+// set all the global variable 
+let firstNumber = '';
+let secondNumber = '';
+let currentOperation = null;
+let shouldRestScreen = false;
 
-// adding a click function to all the buttons
-
-const buttonSeven = document.getElementById('seven');
-buttonSeven.addEventListener('click', function(){
-    newValue = 7;
-    currentValue = display.value;                                                        // gets the current value of  the calculator  
-    display.value = currentValue + newValue;
-});
-
-const buttonEight = document.getElementById('eight');
-buttonEight.addEventListener('click', function(){
-    const newValue = 8;
-    currentValue = display.value;        
-    display.value = currentValue + newValue;
+/**    Gets all the button and add its respective functionality */
+const numberButtons = document.querySelectorAll('[data-number]');
+numberButtons.forEach((button) => {
+    button.addEventListener('click', () => appendNumber(button.textContent))
 })
 
-const buttonNine = document.getElementById('nine');
-buttonNine.addEventListener('click', function (){
-    newValue  = 9;
-    currentValue = display.value;       
-    display.value = currentValue + newValue;
+const operatorButtons = document.querySelectorAll('[data-operator]');
+operatorButtons.forEach((button) => {
+    button.addEventListener('click', () => appendOperator(button.textContent))
 })
 
-const buttonFour = document.getElementById('four');
-buttonFour.addEventListener('click', function(){
-    newValue  = 4;
-    currentValue = display.value;        
-    display.value = currentValue + newValue;
-})
+const lastScreenInput = document.getElementById('screen-last')
+const  currentScreenInput = document.querySelector('.screen-current')
 
-const buttonFive = document.getElementById('five');
-buttonFive.addEventListener('click', function(){
-    newValue  = 5;
-    currentValue = display.value;        
-    display.value = currentValue + newValue;
-})
+const equalButton = document.getElementById('equal')
+equalButton.addEventListener('click', equalTo)
 
-const buttonSix = document.getElementById('six');
-buttonSix.addEventListener('click', function(){
-    newValue  = 6;
-    currentValue = display.value;       
-    display.value = currentValue + newValue;
-})
+const clearButton = document.getElementById('clear');
+clearButton.addEventListener('click', clearNumber);
 
-const buttonOne= document.getElementById('one');
-buttonOne.addEventListener('click', function(){
-    newValue  = 1;
-    currentValue = display.value;                                            
-    display.value = currentValue + newValue;
-})
 
-const buttonTwo = document.getElementById('two');
-buttonTwo.addEventListener('click', function(){
-    newValue  = 2;
-    currentValue = display.value;                                                 // gets the current value of the calculator  
-    display.value = currentValue + newValue;
-})
+const deleteButton = document.getElementById('delete')
+deleteButton.addEventListener('click', deleteNumber);
 
-const buttonThree = document.getElementById('three');
-buttonThree.addEventListener('click', function(){
-    newValue  = 3;
-    currentValue = display.value;                                                  
-    display.value = currentValue + newValue;
-})
 
-const buttonZero = document.getElementById('zero');
-buttonZero.addEventListener('click', function(){
-    newValue  = 0;
-    currentValue = display.value;                                            
-    display.value = currentValue + newValue;
-})
+// function to reset current screen 
+function reset(){
+    currentScreenInput.textContent = '';
+    shouldRestScreen = true
+}
 
-const buttonDelete = document.getElementById('delete');
-buttonDelete.addEventListener('click', function(){
-    currentValue = display.value
-    const stringValue = currentValue.toString();
-    const newStringValue = stringValue.slice(0, -1);
-    const newCurrentValue = Number(newStringValue);
-    display.value = newCurrentValue;
-    if (display.value == 0)return display.value = "";                  // case where after delete Zero returns 
-})
+// function to handle number input 
+function appendNumber(number){
+    if (currentScreenInput.textContent === '0'){
+        currentScreenInput.textContent = '';
+    } 
+    currentScreenInput.textContent += number
+}
 
-const buttonClear = document.getElementById('clear');
-buttonClear.addEventListener('click', function(){
-    display.value = "";                                                                 // clears all the number from the display
-})
+// function to handle delete 
+function deleteNumber(){
+    currentScreenInput.textContent = currentScreenInput.textContent.toString().slice(0, -1);
+    if (currentScreenInput.textContent === ''){
+        currentScreenInput.textContent = 0;
+    }
+}
+
+// function to handle clear 
+function clearNumber(){
+    currentScreenInput.textContent = 0;
+    lastScreenInput.textContent = ' ';
+}
+
+// function to handle operator input 
+function appendOperator(operator){
+   firstNumber = currentScreenInput.textContent;
+   currentOperation = operator
+   lastScreenInput.textContent = `${firstNumber} ${currentOperation}`
+   reset()
+}
+
+// function to handle equal button 
+function equalTo(){
+    secondNumber = currentScreenInput.textContent;
+   currentScreenInput.textContent = operate(firstNumber, currentOperation, secondNumber);
+   lastScreenInput.textContent = `${firstNumber} ${currentOperation} ${secondNumber} = `;
+   currentOperation = null;
+}
+
+
+
+
+
 
 
 /* creating a function to handle all math operation */ 
 // function for addition 
-function addition(number1, number2){
-    let addedNum = number1 + number2;
-    return addedNum
+function addition(a,b){
+   return a+b
 }
 // function for subtraction 
-function subtraction(number1, number2){
-    let subNum = number1 - number2;
-    return subNum
+function subtraction(a,b){
+    return a-b
 }
 // function for multiplication
-function multiply(number1, number2) {
-    let multiNum = number1 * number2;
-    return multiNum
+function multiply(a,b) {
+    return a*b
 }
 // function for division 
-function division (number1, number2){
-    let dividedNum = number1 / number2;
-    return dividedNum
+function division (a,b){
+   return a/b
 }
 
-// variables to contain values 
-let number1;
-let number2;
-let operator;
 
 // handles all mathematical operations 
 function operate (number1, operator, number2){
