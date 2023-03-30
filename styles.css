@@ -13,15 +13,24 @@ body {
     width: 40%;
     border-radius: 20px;
 }
-input {
-    width: 70%;
-    align-items: center;
-    display: flex;
-    justify-content: center;
-    margin-left: 10px;
+.screen {
+    width: 77%;
+    border: 2px solid;
+    border-radius: 5px;
     margin-bottom: 20px;
-    padding: 20px;
-    border-radius: 10px;
+    background-color: #ccc;
+    text-align: right;
+    word-wrap: break-word;
+    word-break: break-all;
+    padding: 10px;
+}
+.screen .screen-last {
+    min-height: 32px;
+    font-size: 20px;
+}
+.screen-current {
+    min-height: 64px;
+    font-size: 40px;
 }
 button {
         width: 25%;
