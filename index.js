@@ -1,117 +1,115 @@
-// set all the global variable 
-let firstNumber = '';
-let secondNumber = '';
-let currentOperation = null;
-let shouldRestScreen = false;
+let first_number;
+let second_number;
+let current_operation = null;
+let shouldResetScreen = false;
 
-/**    Gets all the button and add its respective functionality */
-const numberButtons = document.querySelectorAll('[data-number]');
+// getting all the necessary button
+const numberButtons = document.querySelectorAll('[data-number]')
+const operatorButtons = document.querySelectorAll('[data-operator]')
+const currentOperationScreen = document.querySelector('.screen-current')
+const lastOperationScreen = document.getElementById('screen-last')
+const dotButton = document.getElementById('dot')
+const clearButton = document.getElementById('clear')
+const deleteButton = document.getElementById('delete')
+const equalsButton = document.getElementById('equal')
+
+// loop through the number button 
 numberButtons.forEach((button) => {
     button.addEventListener('click', () => appendNumber(button.textContent))
 })
-
-const operatorButtons = document.querySelectorAll('[data-operator]');
+// loop through the operator button 
 operatorButtons.forEach((button) => {
     button.addEventListener('click', () => appendOperator(button.textContent))
 })
+// clear button 
+clearButton.addEventListener('click', clear) 
+// delete button 
+deleteButton.addEventListener('click', deleteBtn)
+// equal button 
+equalsButton.addEventListener('click', equalTo)
+// dot button
+dotButton.addEventListener('click', appendPoint)  
 
-const lastScreenInput = document.getElementById('screen-last')
-const  currentScreenInput = document.querySelector('.screen-current')
-
-const equalButton = document.getElementById('equal')
-equalButton.addEventListener('click', equalTo)
-
-const clearButton = document.getElementById('clear');
-clearButton.addEventListener('click', clearNumber);
-
-
-const deleteButton = document.getElementById('delete')
-deleteButton.addEventListener('click', deleteNumber);
-
-
-// function to reset current screen 
-function reset(){
-    currentScreenInput.textContent = '';
-    shouldRestScreen = true
+function resetScreen(){
+    currentOperationScreen.textContent = ''
+    shouldResetScreen = false
 }
 
-// function to handle number input 
 function appendNumber(number){
-    if (currentScreenInput.textContent === '0'){
-        currentScreenInput.textContent = '';
-    } 
-    currentScreenInput.textContent += number
+    if (currentOperationScreen.textContent === '0' || shouldResetScreen)  
+    resetScreen()
+    currentOperationScreen.textContent += number
 }
 
-// function to handle delete 
-function deleteNumber(){
-    currentScreenInput.textContent = currentScreenInput.textContent.toString().slice(0, -1);
-    if (currentScreenInput.textContent === ''){
-        currentScreenInput.textContent = 0;
+function appendOperator(operator){
+    if (current_operation !== null) equalTo()
+    first_number = currentOperationScreen.textContent
+    current_operation = operator
+    lastOperationScreen.textContent = `${first_number} ${current_operation}`
+   shouldResetScreen = true
+}
+
+function appendPoint() {
+    if (shouldResetScreen) resetScreen()
+    if (currentOperationScreen.textContent === '')
+      currentOperationScreen.textContent = '0'
+    if (currentOperationScreen.textContent.includes('.')) return
+    currentOperationScreen.textContent += '.'
+  }
+
+function clear(){
+    currentOperationScreen.textContent = '0';
+    lastOperationScreen.textContent = ' ';
+    first_number = ''
+    second_number = ''
+    current_operation = null
+}
+
+function deleteBtn(){
+    currentOperationScreen.textContent = currentOperationScreen.textContent.toString().slice(0,-1);
+}
+
+function equalTo(){
+    if (current_operation === null || shouldResetScreen) return
+    if (current_operation === '/' && currentOperationScreen.textContent === '0'){
+        alert('No number is divisble by Zero')
+        return
+    }
+    second_number = currentOperationScreen.textContent
+    currentOperationScreen.textContent = roundResult(evaluate(first_number, current_operation, second_number))
+    lastOperationScreen.textContent = `${first_number} ${current_operation} ${second_number} =`
+    current_operation = null
+}
+
+function roundResult(number){
+    return Math.round(number * 1000)/ 1000
+}
+
+/* All Math Operations */ 
+function add(a,b){
+    return a + b;
+}
+function sub(a,b){
+    return a - b;
+}
+function multi (a,b) {
+    return a * b;
+}
+function divide(a,b){
+    return a / b;
+}
+
+function evaluate(num_1, operator, num_2){
+    num_1 = Number(num_1)
+    num_2 = Number(num_2)
+    switch(operator) {
+        case '+':
+           return  add(num_1, num_2)
+        case '-':
+            return sub(num_1, num_2)
+        case '*':
+            return multi(num_1, num_2)
+        case '/':
+            return divide(num_1, num_2)
     }
 }
-
-// function to handle clear 
-function clearNumber(){
-    currentScreenInput.textContent = 0;
-    lastScreenInput.textContent = ' ';
-}
-
-// function to handle operator input 
-function appendOperator(operator){
-   firstNumber = currentScreenInput.textContent;
-   currentOperation = operator
-   lastScreenInput.textContent = `${firstNumber} ${currentOperation}`
-   reset()
-}
-
-// function to handle equal button 
-function equalTo(){
-    secondNumber = currentScreenInput.textContent;
-   currentScreenInput.textContent = operate(firstNumber, currentOperation, secondNumber);
-   lastScreenInput.textContent = `${firstNumber} ${currentOperation} ${secondNumber} = `;
-   currentOperation = null;
-}
-
-
-
-
-
-
-
-/* creating a function to handle all math operation */ 
-// function for addition 
-function addition(a,b){
-   return a+b
-}
-// function for subtraction 
-function subtraction(a,b){
-    return a-b
-}
-// function for multiplication
-function multiply(a,b) {
-    return a*b
-}
-// function for division 
-function division (a,b){
-   return a/b
-}
-
-
-// handles all mathematical operations 
-function operate (number1, operator, number2){
-   switch (operator){
-    case "+":
-        return addition(number1, number2);
-    case "-":
-        return subtraction(number1, number2);
-    case "*":
-        return multiply(number1, number2);
-    case "/":
-        return division(number1, number2);
-    default:
-        return "Operator does not exist"
-   }
-}
-
-
